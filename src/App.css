@@ -2,6 +2,7 @@
   text-align: center;
 }
 
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -35,4 +36,27 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+td{
+  padding: 6px;
+}
+
+button {
+  border-radius: 12px;
+  background-color: orange;
+  padding: 10px 24px;
+  margin-left: 10px;
+}
+input {
+  width: 300px;
+  padding: 15px 20px;
+  margin: 8px 0;
+  margin-left: 10px;
+  box-sizing: border-box;
+  border-color: orange;
+}
+
+label{
+  font-size: 30px;
 }

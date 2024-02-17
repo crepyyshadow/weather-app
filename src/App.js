@@ -1,44 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './App.css';
+import Table from './components/table';
+import Loader from './components/Loader/Loader';
 
 function App() {
-  const [city, setCity] = useState('Visakhapatnam');
-  const [weatherData, setWeatherData] = useState(null);
+  const [city, setCity] = useState('');
+  const [weatherData, setWeatherData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const API_KEY = '1feede71a2271463ae7226024f8c03c6';
 
-  useEffect(() => {
-    const fetchWeatherData = async () => {
-      setIsLoading(true);
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`);
-      const data = await response.json();
-      setWeatherData(data);
-      console.log(data);
-      setIsLoading(false);
-    };
-
-    fetchWeatherData();
-  }, [city]);
-
   const handleSearchChange = (event) => {
     setCity(event.target.value);
+
   };
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-   // fetchWeatherData();
+  const fetchWeatherData = async (lat, lon) => {
+    setIsLoading(true);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`)
+    const data = await response.json();
+    setWeatherData(data.list);
+    setIsLoading(false);
   };
+  const handleSearchSubmit = async (event) => {
+    event.preventDefault();
+    try{
+
+      const url = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
+      const response = await fetch(url)
+      const data = await response.json()
+      const cityData = data[0]
+      fetchWeatherData(cityData.lat,cityData.lon);
+    }catch(error){
+     // alert("invalidCityName")
+      setWeatherData([])
+    }
+    };
 
   return (
-    <div className="App">
+    <div className="App"  >
       <h1>Weather in {city}</h1>
       {isLoading && <p>Loading...</p>}
-      {weatherData && (
-        <div>
-          {
-          <p>Date: {weatherData.dt}</p>}
-        </div>
-      )}
       <form onSubmit={handleSearchSubmit}>
         <label>
           Search by city:
@@ -46,6 +47,14 @@ function App() {
         </label>
         <button type="submit">Search</button>
       </form>
+             <div style={{display:"flex", flexWrap:"wrap", gap:"16px", margin:"24px", justifyContent:"center" }} >
+              {isLoading ? <Loader/> :
+              weatherData.map((data,i)=> (
+              <Table key={i} data={data} />)
+              )}
+
+            </div>
+
     </div>
   );
 }
