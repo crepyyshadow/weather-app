@@ -18,7 +18,10 @@ function App() {
     setIsLoading(true);
     const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`)
     const data = await response.json();
-    setWeatherData(data.list);
+    //const filteredData = data.list.filter((item, index) => index % 8 === 0);
+    const filteredData = filterFirstRecordOfEachDay(data.list);
+    setWeatherData(filteredData);
+   // console.log(data);
     setIsLoading(false);
   };
   const handleSearchSubmit = async (event) => {
@@ -36,6 +39,18 @@ function App() {
     }
     };
 
+    const filterFirstRecordOfEachDay = (data) => {
+      const filteredData = [];
+      const sameDates = {};
+      data.forEach(item => {
+        const date = new Date(item.dt * 1000).toLocaleDateString();
+        if (!sameDates[date]) {
+          sameDates[date] = true;
+          filteredData.push(item);
+        }
+      });
+      return filteredData;
+    };
   return (
     <div className="App"  >
       <h1>Weather in {city}</h1>
@@ -54,7 +69,6 @@ function App() {
               )}
 
             </div>
-
     </div>
   );
 }

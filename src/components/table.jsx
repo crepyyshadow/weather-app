@@ -1,14 +1,13 @@
 import React from 'react';
 
 
-
-const Table = ({data}) => {
+const Table = ({data}) => { 
     const {dt_txt:date, main:{temp_min:minTemp, temp_max:maxTemp,pressure,humidity }} = data
     return (
       <table border="2px solid red" style={{borderCollapse:"collapse"}} > 
         <tbody>
           <tr>
-            <td colSpan="2" style={{backgroundColor: "orange"}}>{date}</td>
+            <td colSpan="2" style={{backgroundColor: "orange"}}>Date: {formatDate(date)}</td>
           </tr>
           <tr>
             <th colSpan="2" style={{backgroundColor: "gray"}}>Temprature</th>
@@ -35,4 +34,12 @@ const Table = ({data}) => {
   
 }
 
+/* Time conversion into DD/MM/YYY*/
+function formatDate(dateString) {
+  const [datePart, timePart] = dateString.split(' ');
+  const [year, month, date] = datePart.split('-');
+  const formattedDate = `${date}/${month}/${year}`;
+
+  return formattedDate;
+}
 export default Table;
